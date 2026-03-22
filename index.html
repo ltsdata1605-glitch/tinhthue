@@ -53,8 +53,8 @@
         import { GoogleGenAI, Type } from "https://aistudiocdn.com/@google/genai@^1.21.0";
 
         // --- CONFIGURATION ---
-        // !!! QUAN TRỌNG: Dán khóa API Gemini của bạn vào đây.
-        const API_KEY = 'PASTE_YOUR_GEMINI_API_KEY_HERE';
+        // !!! QUAN TRỌNG: Khóa API Gemini được lấy từ biến môi trường.
+        const API_KEY = process.env.GEMINI_API_KEY;
 
         // --- CONSTANTS ---
         const PERSONAL_DEDUCTION = 11000000;
