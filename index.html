@@ -104,7 +104,7 @@
         // --- STATE MANAGEMENT ---
         let state = {
             name: '', totalIncome: 0, dependents: 0, proxyAmount: 0, insurance: 0, unionFee: 0,
-            bankAccount: '', bankCode: '', qrDescription: '',
+            bankAccount: '', bankCode: '', qrDescription: '', imageData: '',
             results: null, savedCalculations: [], qrCodeUrl: '',
             isProcessing: false, error: null, showTaxBrackets: false, showProxyTooltip: false,
         };
@@ -484,6 +484,7 @@
                 
                 try {
                     const { base64Data, mimeType } = await processAndResizeImage(file);
+                    state.imageData = base64Data;
                     const ai = new GoogleGenAI({ apiKey: API_KEY });
                     const response = await ai.models.generateContent({
                         model: 'gemini-2.5-flash',
@@ -560,7 +561,7 @@
             });
             document.getElementById('save-btn').addEventListener('click', async () => {
                 if (state.totalIncome <= 0) { state.error = 'Vui lòng nhập thu nhập để lưu.'; render(); return; }
-                const calcToSave = { name: state.name || 'Chưa đặt tên', totalIncome: state.totalIncome, dependents: state.dependents, proxyAmount: state.proxyAmount, insurance: state.insurance, unionFee: state.unionFee, createdAt: new Date().toISOString() };
+                const calcToSave = { name: state.name || 'Chưa đặt tên', totalIncome: state.totalIncome, dependents: state.dependents, proxyAmount: state.proxyAmount, insurance: state.insurance, unionFee: state.unionFee, imageData: state.imageData, createdAt: new Date().toISOString() };
                 await saveCalculation(calcToSave);
                 state.savedCalculations = await getCalculations();
                 render();
@@ -576,6 +577,7 @@
                         state.name = calc.name === 'Chưa đặt tên' ? '' : calc.name;
                         state.totalIncome = calc.totalIncome; state.dependents = calc.dependents;
                         state.proxyAmount = calc.proxyAmount; state.insurance = calc.insurance; state.unionFee = calc.unionFee;
+                        state.imageData = calc.imageData || '';
                         render();
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
